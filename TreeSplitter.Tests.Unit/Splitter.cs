@@ -13,11 +13,24 @@ public class Splitter
         {
             case XElement element:
             {
-                foreach (var child in element.Nodes().ToList())
+                if (element.FirstNode != null)
                 {
-                    segments.AddRange(Split(child, offset));
+                    foreach (var child in element.Nodes().ToList())
+                    {
+                        segments.AddRange(Split(child, offset));
 
-                    offset = segments.Last().End;
+                        offset = segments.Last().End;
+                    }
+                }
+                else
+                {
+                    segments.Add(new Segment(
+                        element,
+                        node.Parent,
+                        offset + 0,
+                        offset + element.Value.Length,
+                        string.Empty
+                    ));
                 }
 
                 break;

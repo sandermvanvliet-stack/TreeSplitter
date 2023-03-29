@@ -28,4 +28,27 @@ public class TreeShaker
 
         return element;
     }
+    public static XElement Shake(XElement element, Func<XElement, bool> matcher)
+    {
+        if (matcher(element))
+        {
+            // Walk through the siblings to see if there
+            // are adjacent highlight nodes. If there are
+            // then merge with ourselves.
+            while (element.NextNode is XElement siblingHighlight && matcher(siblingHighlight))
+            {
+                element.LastNode!.AddAfterSelf(siblingHighlight.Nodes());
+                siblingHighlight.Remove();
+            }
+        }
+        else if (element.HasElements)
+        {
+            foreach (var child in element.Elements())
+            {
+                Shake(child, matcher);
+            }
+        }
+
+        return element;
+    }
 }

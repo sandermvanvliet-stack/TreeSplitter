@@ -149,7 +149,14 @@ public class Highlighter
         var foundNode = root.XPathSelectElement(selector);
         var lastSelector = selectorParts.Last();
         var count = int.Parse(lastSelector.Split('[')[1].Split(']')[0]);
-        XNode startNode = foundNode.Nodes().OfType<XText>().ToList()[count - 1];
-        return startNode;
+        
+        var textNodes = foundNode.Nodes().OfType<XText>().ToList();
+
+        if ((count - 1) < textNodes.Count)
+        {
+            return textNodes[count - 1];
+        }
+
+        return null;
     }
 }
